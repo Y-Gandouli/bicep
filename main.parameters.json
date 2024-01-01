@@ -1,0 +1,172 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+
+      "location":{
+        "value": "East US"
+      },
+
+      "adname":{
+        "value": "Youssef"
+      },
+
+      "psw":{
+        "value": "wqL!Qmaj57k8Sb#"
+      },
+
+      "vnetParams":{
+        "value": {
+          "name": "myvnet",
+          "addressPrefixes": ["10.0.0.0/16"],
+          "enableDdosProtection": false,
+          "subnets": [ 
+          {
+            "name": "sub1",
+            "addressPrefix": "10.0.0.0/24"
+          },
+          {
+              "name": "sub2",
+              "addressPrefix": "10.0.0.0/24"
+          }
+          ]
+        }
+      },   
+
+      "storageParams":{
+        "value": {
+          "storageName": "mystorageac1234",
+          "skuName": "Standard_LRS",
+          "kind": "StorageV2",
+          "accessTier": "Hot"
+        }
+      },
+
+      "fileShareParams":{
+        "value": {
+        "accessTier": "Hot",
+        "protocol": "NFS"
+        }
+      },
+
+      "virtualMachineParams":{
+        "value": {
+          "name": "myVm",
+          "publisher":"canonical",
+          "offer": "0001-com-ubuntu-server-focal",
+          "sku": "20_04-lts-gen2",
+          "version": "latest",
+          "osDiskName": "mydisk",
+          "osType": "Linux",
+          "createOption":"FromImage",
+          "caching": "ReadWrite",
+          "deleteOption": "Delete",
+          "computerName": "myComp"
+        }
+      },
+
+      "nsgParams":{
+        "value": {
+          "name": "vmNsg",
+
+          "nsgRules": [{
+          "name": "AllowMyIp",
+          "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+          "access": "Allow",
+          "direction": "Inbound",
+          "priority": 105,
+          "protocol": "TCP",
+          "sourceAddressPrefix": "196.70.241.205",
+          "sourceAddressPrefixes": [],
+          "destinationPortRange": "22"
+        },
+        {
+          "name": "AllowWebApp",
+          "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+          "access": "Allow",
+          "direction": "Inbound",
+          "priority": 106,
+          "protocol": "TCP",
+          "sourceAddressPrefix": "",
+          "sourceAddressPrefixes": ["20.241.146.223","20.241.146.241","20.241.147.58","20.241.147.85","20.241.147.165","20.241.147.174","20.119.0.28","20.241.147.183","20.241.147.185","20.241.147.243","20.241.148.129","20.241.148.158","20.241.148.192","20.241.148.209","20.241.148.210","20.241.146.195","20.241.148.212","20.241.148.246","20.241.149.67","20.241.149.123","20.241.149.124","20.241.149.138","20.241.149.141","20.241.149.193","20.241.149.199"],
+          "destinationPortRange": "3000"
+        }]
+      }
+    },
+    
+      "SqlServerParams":{
+        "value": {
+          "name": "sqlServer",
+          "minimalTlsVersion":"1.2",
+          "publicNetworkAccess": "Disabled"
+        }
+      },
+
+      "SqlFirewallRUles1Params":{
+        "value": {
+          "name": "my Ip Address",
+          "startIpAddress": "196.70.241.205",
+          "endIpAddress": "196.70.241.205"
+
+        }
+      },
+
+      "SqlFirewallRUles2Params":{
+        "value": {
+          "name": "vmIpAddress",
+          "startIpAddress": "98.71.63.149",
+          "endIpAddress": "98.71.63.149"
+        }
+      },
+
+      "sqlDatabaseParams":{
+        "value": {
+          "name": "clients",
+          "skuName": "GP_S_Gen5",
+          "tier": "GeneralPurpose",
+          "family": "Gen5",
+          "capacity": 1,
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "maxSizeBytes": 34359738368,
+          "catalogCollation": "QL_Latin1_General_CP1_CI_AS",
+          "zoneRedundant": false,
+          "readScale": "Disabled",
+          "autoPauseDelay": -1,
+          "minCapacity": 0.5,
+          "requestedBackupStorageRedundancy": "Zone",
+          "availabilityZone": "NoPreference"
+
+        }
+
+      },
+
+      "mywebappParams":{
+        "value": {
+          "name":"mywebapp",
+          "identity": "SystemAssigned",
+          "kind": "app,linux",
+          "publicNetworkAccess": "Enabled",
+          "redundancyMode":"GeoRedundant",
+          "hostName": "[concat(parameters('mywebappParams.name'), '.azurewebsites.net')]",
+          "sslState": "Enabled",
+          "hostType": "Standard",
+          "hostNameScm": "[concat(parameters('mywebappParams.name'), '.scm.azurewebsites.net')]",
+          "sslStateScm": "Enabled",
+          "hostTypeScm": "Repository",
+          "keyVaultReferenceIdentity": "SystemAssigned",
+          "numberOfWorkers": 1,
+          "linuxFxVersion": "NODE|18-lts",
+          "netFrameworkVersion": "v4.0",
+          "scmType": "GitHub",
+          "logsDirectorySizeLimit": 100,
+          "alwaysOn": false,
+          "appCommandLine": "pm2 serve /home/site/wwwroot --no-daemon --spa" ,
+          "managedPipelineMode": "Integrated",
+          "remoteDebuggingVersion": "VS2019",
+          "reserved": true
+          
+        }
+
+      }
+  }
+}
