@@ -138,6 +138,7 @@ resource SqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
   }
 }
 
+// Hadi w li moraha, rdhom array b for
 resource SqlServerFirewallRUles1 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
  
   name: SqlFirewallRUles1Params.name
@@ -185,6 +186,8 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
 
 }
 
+
+ // Hadi app service, mais makatreferencer 7ta app plan.
 resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
   
   name: mywebappParams.name
