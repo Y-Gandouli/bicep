@@ -140,6 +140,20 @@
 
       },
 
+      "appServicePlanParams":{
+        "value": {
+          "name": "appServicePlan",
+          "reserved": "true",
+          "skuName": "B1",
+          "tier": "Basic",
+          "size": "B1",
+          "family": "B",
+          "capacity": 0,
+          "kind": "linux"
+        }
+
+      },
+
       "mywebappParams":{
         "value": {
           "name":"mywebapp",

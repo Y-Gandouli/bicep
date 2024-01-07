@@ -11,6 +11,7 @@ param nsgParams object
 param SqlFirewallRUles1Params object
 param SqlFirewallRUles2Params object
 param sqlDatabaseParams object
+param appServicePlanParams object
 
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
@@ -33,7 +34,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   }
 } 
 
-/*resource myStorage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource myStorage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   
   name: storageParams.name
   location: location
@@ -45,9 +46,10 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
     accessTier: storageParams.accessTier
   }
   
-}*/
+}
 
-module myStorage './storageAccount.bicep' = {
+/*module myStorage './storageAccount.bicep' = {
+  
   scope: resourceGroup()
   
   name: 'storagedep'
@@ -59,7 +61,7 @@ module myStorage './storageAccount.bicep' = {
     accessTier: storageParams.accessTier
   }
 }
-
+*/
 
 resource myfiles 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   
@@ -185,6 +187,22 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
 
 }
 
+resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
+  name: appServicePlanParams.name
+  location: location
+  properties: {
+    reserved: appServicePlanParams.reserved
+  }
+  sku: {
+    name: appServicePlanParams.skuName
+    tier: appServicePlanParams.tier
+    family: appServicePlanParams.family
+    size: appServicePlanParams.size
+    capacity: appServicePlanParams.capability
+  }
+  kind: appServicePlanParams.kind
+}
+
 resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
   
   name: mywebappParams.name
@@ -196,7 +214,7 @@ resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
     enabled: true
     publicNetworkAccess: mywebappParams.publicNetworkAccess
     redundancyMode: mywebappParams.redundancyMode
-    
+    serverFarmId: appServicePlan.id
     hostNameSslStates: [
       {
       name: mywebappParams.hostName
