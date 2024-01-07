@@ -8,8 +8,7 @@ param virtualMachineParams object
 param SqlServerParams object
 param mywebappParams object
 param nsgParams object
-param SqlFirewallRUles1Params object
-param SqlFirewallRUles2Params object
+param SqlFirewallRUles object
 param sqlDatabaseParams object
 param appServicePlanParams object
 
@@ -140,28 +139,18 @@ resource SqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
   }
 }
 
-resource SqlServerFirewallRUles1 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
- 
-  name: SqlFirewallRUles1Params.name
-  parent: SqlServer
+resource SqlServerFirewallRUles 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = [ 
   
-  properties: {
-    startIpAddress: SqlFirewallRUles1Params.startIpAddress
-    endIpAddress: SqlFirewallRUles1Params.endIpAddress
-
-  }
-}
-
-resource SqlServerFirewallRUles2 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
-  name: SqlFirewallRUles2Params.name
-  parent: SqlServer
+  for rule in SqlFirewallRUles.rules: {
+    name: rule.name
+    parent: SqlServer
   
-  properties: {
-    startIpAddress: SqlFirewallRUles2Params.startIpAddress
-    endIpAddress: SqlFirewallRUles2Params.endIpAddress
-
-  }
-}
+    properties: {
+      startIpAddress: rule.startIpAddress
+      endIpAddress: rule.endIpAddress
+    }
+  } 
+]
 
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
   name: sqlDatabaseParams.name
@@ -183,8 +172,6 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
     requestedBackupStorageRedundancy: sqlDatabaseParams.requestedBackupStorageRedundancy
     availabilityZone: sqlDatabaseParams.availabilityZone
   }
-  
-
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {

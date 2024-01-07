@@ -68,7 +68,6 @@
       "nsgParams":{
         "value": {
           "name": "vmNsg",
-
           "nsgRules": [{
           "name": "AllowMyIp",
           "type": "Microsoft.Network/networkSecurityGroups/securityRules",
@@ -102,20 +101,19 @@
         }
       },
 
-      "SqlFirewallRUles1Params":{
+      "SqlFirewallRUles":{
         "value": {
-          "name": "my Ip Address",
-          "startIpAddress": "196.70.241.205",
-          "endIpAddress": "196.70.241.205"
-
-        }
-      },
-
-      "SqlFirewallRUles2Params":{
-        "value": {
-          "name": "vmIpAddress",
-          "startIpAddress": "98.71.63.149",
-          "endIpAddress": "98.71.63.149"
+          "rules": [{
+            "name": "my Ip Address",
+            "startIpAddress": "196.70.241.205",
+            "endIpAddress": "196.70.241.205"
+            },
+            {
+            "name": "vmIpAddress",
+            "startIpAddress": "98.71.63.149",
+            "endIpAddress": "98.71.63.149"
+            }
+          ] 
         }
       },
 
