@@ -1,8 +1,26 @@
+@description('The location of the resources using this parameter')
 param location string
+@description('the database administrators name')
 param adname string
+@secure()
+@minLength(6)
 param psw string
+@metadata({
+  name: 'string.the name of vn'
+  addressPrefixes: ''
+  enableDdosProtection: 'bool'
+  subnets:[{
+    name: 'subname'
+    addressPrefix: 'the add'
+}]
+})
 param vnetParams object
+@metadata({
+  accessTier:'string. you can choose either Premium, Transaction Optimized, Hot or Cool'
+  protocol: 'string. NFS or SMB'
+})
 param fileShareParams object
+
 param storageParams object
 param virtualMachineParams object
 param SqlServerParams object
@@ -46,21 +64,6 @@ resource myStorage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
   
 }
-
-/*module myStorage './storageAccount.bicep' = {
-  
-  scope: resourceGroup()
-  
-  name: 'storagedep'
-  params: {
-    name : storageParams.name
-    location: location
-    skuName: storageParams.skuName
-    kind: storageParams.kind
-    accessTier: storageParams.accessTier
-  }
-}
-*/
 
 resource myfiles 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   
@@ -177,6 +180,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: appServicePlanParams.name
   location: location
+  kind: appServicePlanParams.kind
   properties: {
     reserved: appServicePlanParams.reserved
   }
@@ -187,7 +191,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     size: appServicePlanParams.size
     capacity: appServicePlanParams.capability
   }
-  kind: appServicePlanParams.kind
+  
 }
 
 resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
