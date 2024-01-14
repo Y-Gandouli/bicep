@@ -1,3 +1,3 @@
-Connect-AzAccount -Tenant '5c7d1d04-7088-43ad-a984-f402741acef1'
-Select-AzSubscription -Subscription 'd02e23ef-ebce-4dd2-b855-5f48475f67ca'
-New-AzResourceGroupDeployment -Name 'mouaad'  -ResourceGroupName 'myresourceg' -TemplateFile './main.bicep' -TemplateParameterFile .\main.parameters.json
+Connect-AzAccount -Tenant 'bb5218c1-1d99-4da3-a809-dd35f630016d'
+Select-AzSubscription -Subscription '41b9910a-eab0-459e-88e4-59b0dc35b335'
+New-AzResourceGroupDeployment -Name 'mouaad'  -ResourceGroupName 'myresourceg' -TemplateFile './main.bicep' -TemplateParameterFile .\main.parameters.json -whatIf

@@ -20,7 +20,6 @@ param vnetParams object
   protocol: 'string. NFS or SMB'
 })
 param fileShareParams object
-
 param storageParams object
 param virtualMachineParams object
 param SqlServerParams object
@@ -30,10 +29,26 @@ param SqlFirewallRUles object
 param sqlDatabaseParams object
 param appServicePlanParams object
 
+resource netInterface 'Microsoft.Network/networkInterfaces@2023-06-01' = {
+  name: 'netInterfae'
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipConfigName'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: virtualNetwork.properties.subnets[0].id
+          }
+        }
+      }
+    ]
+  }
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
-  
-
+ 
   name: vnetParams.name
   location: location
   
@@ -100,13 +115,42 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         computerName: virtualMachineParams.computerName
         adminUsername: adname
         adminPassword: psw
-       
       }
-    
+
+      networkProfile: { 
+          networkApiVersion: '2020-11-01'
+          networkInterfaces: [{
+            id: netInterface.id
+            properties: {
+              deleteOption: 'Delete'
+            }
+          }]
+          networkInterfaceConfigurations: [{ 
+              name: 'myInterfaceConfig'
+               properties: {
+                deleteOption: 'Delete'
+                ipConfigurations: [{
+                  name: 'ipConfig'
+                  properties: {
+                    subnet: { id: virtualNetwork.properties.subnets[0].id
+                    }
+                    publicIPAddressConfiguration: {
+                      name: 'publicIPConfig'                      
+                      properties: {
+                        deleteOption: 'Delete'
+                        publicIPAddressVersion: 'IPv4'
+                        publicIPAllocationMethod: 'Dynamic'                        
+                      }                      
+                    }
+                  }
+                }]
+              }
+            }]
+      }    
   }
 }
 
-resource nsg1 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
+resource nsgRules 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
   
   name: nsgParams.name
   location: location
@@ -191,7 +235,6 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     size: appServicePlanParams.size
     capacity: appServicePlanParams.capability
   }
-  
 }
 
 resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
@@ -224,9 +267,7 @@ resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
     keyVaultReferenceIdentity: mywebappParams.keyVaultReferenceIdentity
 
     virtualNetworkSubnetId: filter(virtualNetwork.properties.subnets, x => x.name == 'sub1')[0].id
-
     siteConfig: {
-
       numberOfWorkers: mywebappParams.numberOfWorkers
       linuxFxVersion: mywebappParams.linuxFxVersion
       netFrameworkVersion: mywebappParams.netFrameworkVersion
