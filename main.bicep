@@ -68,7 +68,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
 
 resource myStorage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   
-  name: storageParams.name
+  name: storageParams.storageName
   location: location
   sku: {
     name: storageParams.skuName
@@ -233,7 +233,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     tier: appServicePlanParams.tier
     family: appServicePlanParams.family
     size: appServicePlanParams.size
-    capacity: appServicePlanParams.capability
+    capacity: appServicePlanParams.capacity
   }
 }
 
@@ -241,7 +241,6 @@ resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
   
   name: mywebappParams.name
   location: location
-  identity: mywebappParams.identity 
   kind: mywebappParams.kind 
   
   properties:{

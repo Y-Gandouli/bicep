@@ -32,12 +32,14 @@
     },
     "fileShareParams": {
       "value": {
+        "name": "myFileShare",
         "accessTier": "Hot",
         "protocol": "NFS"
       }
     },
     "storageParams": {
       "value": {
+        
         "storageName": "mystorageac1234",
         "skuName": "Standard_LRS",
         "kind": "StorageV2",
@@ -69,7 +71,6 @@
     "mywebappParams": {
       "value": {
         "name": "mywebapp",
-        "identity": "SystemAssigned",
         "kind": "app,linux",
         "publicNetworkAccess": "Enabled",
         "redundancyMode": "GeoRedundant",
