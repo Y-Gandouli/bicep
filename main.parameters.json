@@ -17,7 +17,6 @@
         "addressPrefixes": [
           "10.0.0.0/16"
         ],
-        "enableDdosProtection": false,
         "subnets": [
           {
             "name": "sub1",
@@ -25,7 +24,7 @@
           },
           {
             "name": "sub2",
-            "addressPrefix": "10.0.0.0/24"
+            "addressPrefix": "10.0.1.0/24"
           }
         ]
       }
@@ -40,7 +39,7 @@
     "storageParams": {
       "value": {
         
-        "storageName": "mystorageac1234",
+        "storageName": "mystorage15012024",
         "skuName": "Standard_LRS",
         "kind": "StorageV2",
         "accessTier": "Hot"
@@ -49,11 +48,12 @@
     "virtualMachineParams": {
       "value": {
         "name": "myVm",
+        
         "publisher": "canonical",
         "offer": "0001-com-ubuntu-server-focal",
         "sku": "20_04-lts-gen2",
         "version": "latest",
-        "osDiskName": "mydisk",
+        "osDiskName": "myDisk",
         "osType": "Linux",
         "createOption": "FromImage",
         "caching": "ReadWrite",
@@ -63,9 +63,9 @@
     },
     "SqlServerParams": {
       "value": {
-        "name": "sqlServer",
+        "name": "clientsdb2024",
         "minimalTlsVersion": "1.2",
-        "publicNetworkAccess": "Disabled"
+        "publicNetworkAccess": "Enabled"
       }
     },
     "mywebappParams": {
@@ -106,7 +106,9 @@
             "protocol": "TCP",
             "sourceAddressPrefix": "196.70.241.205",
             "sourceAddressPrefixes": [],
-            "destinationPortRange": "22"
+            "sourcePortRange": "*",
+            "destinationPortRange": "22",
+            "destinationAddressPrefixes": ["84.170.76.161"]
           },
           {
             "name": "AllowWebApp",
@@ -143,6 +145,8 @@
               "20.241.149.193",
               "20.241.149.199"
             ],
+            "sourcePortRange": "*",
+            "destinationAddressPrefixes": ["84.170.76.161"],
             "destinationPortRange": "3000"
           }
         ]

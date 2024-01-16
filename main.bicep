@@ -29,6 +29,20 @@ param SqlFirewallRUles object
 param sqlDatabaseParams object
 param appServicePlanParams object
 
+resource ipAddress 'Microsoft.Network/publicIPAddresses@2023-06-01' = {
+  name: 'vmIpAdd'
+  location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Global'
+  }
+  properties: {
+    deleteOption: 'Delete'
+    publicIPAddressVersion: 'IPv4'
+    publicIPAllocationMethod: 'Static'
+  }
+}
+
 resource netInterface 'Microsoft.Network/networkInterfaces@2023-06-01' = {
   name: 'netInterfae'
   location: location
@@ -36,10 +50,22 @@ resource netInterface 'Microsoft.Network/networkInterfaces@2023-06-01' = {
     ipConfigurations: [
       {
         name: 'ipConfigName'
+        
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
             id: virtualNetwork.properties.subnets[0].id
+          }
+          
+          publicIPAddress: {
+            id: ipAddress.id
+
+            properties: {
+              
+              deleteOption: 'Delete'
+              publicIPAddressVersion: 'IPv4'
+              publicIPAllocationMethod: 'Static'
+            }
           }
         }
       }
@@ -62,9 +88,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
           addressPrefix: subnet.addressPrefix
         }
     }]
-    enableDdosProtection: vnetParams.enableDdosProtection
   }
-} 
+}
 
 resource myStorage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   
@@ -110,13 +135,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           deleteOption: virtualMachineParams.deleteOption 
         }
       }
-
       osProfile:{
         computerName: virtualMachineParams.computerName
         adminUsername: adname
         adminPassword: psw
       }
-
       networkProfile: { 
           networkApiVersion: '2020-11-01'
           networkInterfaces: [{
@@ -125,27 +148,6 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2023-09-01' = {
               deleteOption: 'Delete'
             }
           }]
-          networkInterfaceConfigurations: [{ 
-              name: 'myInterfaceConfig'
-               properties: {
-                deleteOption: 'Delete'
-                ipConfigurations: [{
-                  name: 'ipConfig'
-                  properties: {
-                    subnet: { id: virtualNetwork.properties.subnets[0].id
-                    }
-                    publicIPAddressConfiguration: {
-                      name: 'publicIPConfig'                      
-                      properties: {
-                        deleteOption: 'Delete'
-                        publicIPAddressVersion: 'IPv4'
-                        publicIPAllocationMethod: 'Dynamic'                        
-                      }                      
-                    }
-                  }
-                }]
-              }
-            }]
       }    
   }
 }
@@ -166,6 +168,8 @@ resource nsgRules 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
           protocol: nsgRule.protocol
           sourceAddressPrefix: nsgRule.sourceAddressPrefix
           sourceAddressPrefixes: nsgRule.sourceAddressPrefixes
+          destinationAddressPrefixes: nsgRule.destinationAddressPrefixes
+          sourcePortRange: nsgRule.sourcePortRange
           destinationPortRange: nsgRule.destinationPortRange
         }
       }
