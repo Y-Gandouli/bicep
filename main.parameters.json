@@ -14,15 +14,19 @@
     "vnetParams": {
       "value": {
         "name": "myvnet",
+        "dName1":"del1",
+        "dName2": "del2",
         "addressPrefixes": [
           "10.0.0.0/16"
         ],
         "subnets": [
           {
+           
             "name": "sub1",
             "addressPrefix": "10.0.0.0/24"
           },
           {
+            
             "name": "sub2",
             "addressPrefix": "10.0.1.0/24"
           }
@@ -31,9 +35,9 @@
     },
     "fileShareParams": {
       "value": {
-        "name": "myFileShare",
+        "name": "myfileshar",
         "accessTier": "Hot",
-        "protocol": "NFS"
+        "protocol": "SMB"
       }
     },
     "storageParams": {
@@ -48,7 +52,7 @@
     "virtualMachineParams": {
       "value": {
         "name": "myVm",
-        
+        "size": "Standard_B1s",
         "publisher": "canonical",
         "offer": "0001-com-ubuntu-server-focal",
         "sku": "20_04-lts-gen2",
@@ -73,7 +77,7 @@
         "name": "mywebapp",
         "kind": "app,linux",
         "publicNetworkAccess": "Enabled",
-        "redundancyMode": "GeoRedundant",
+        "redundancyMode": "None",
         "hostName": "[concat(parameters('mywebappParams.name'), '.azurewebsites.net')]",
         "sslState": "Enabled",
         "hostType": "Standard",
@@ -85,6 +89,7 @@
         "linuxFxVersion": "NODE|18-lts",
         "netFrameworkVersion": "v4.0",
         "scmType": "GitHub",
+        "httpsOnly": true,
         "logsDirectorySizeLimit": 100,
         "alwaysOn": false,
         "appCommandLine": "pm2 serve /home/site/wwwroot --no-daemon --spa",
@@ -175,9 +180,6 @@
         "tier": "GeneralPurpose",
         "family": "Gen5",
         "capacity": 1,
-        "collation": "SQL_Latin1_General_CP1_CI_AS",
-        "maxSizeBytes": 34359738368,
-        "catalogCollation": "QL_Latin1_General_CP1_CI_AS",
         "zoneRedundant": false,
         "readScale": "Disabled",
         "autoPauseDelay": -1,

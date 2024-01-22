@@ -34,7 +34,7 @@ resource ipAddress 'Microsoft.Network/publicIPAddresses@2023-06-01' = {
   location: location
   sku: {
     name: 'Standard'
-    tier: 'Global'
+    tier: 'Regional'
   }
   properties: {
     deleteOption: 'Delete'
@@ -50,22 +50,13 @@ resource netInterface 'Microsoft.Network/networkInterfaces@2023-06-01' = {
     ipConfigurations: [
       {
         name: 'ipConfigName'
-        
         properties: {
           privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: virtualNetwork.properties.subnets[0].id
-          }
-          
           publicIPAddress: {
             id: ipAddress.id
-
-            properties: {
-              
-              deleteOption: 'Delete'
-              publicIPAddressVersion: 'IPv4'
-              publicIPAllocationMethod: 'Static'
-            }
+          }
+          subnet: {
+            id: virtualNetwork.properties.subnets[0].id
           }
         }
       }
@@ -84,7 +75,19 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
     }
     subnets: [ for subnet in vnetParams.subnets : {
         name: subnet.name
-        properties: {
+        properties: { 
+         /* delegations: [{
+            name: vnetParams.dName1
+            properties: {
+              serviceName: 'Microsoft.Web/serverFarms'
+            }
+         },{
+            name: vnetParams.dName2
+            properties: {
+              serviceName: 'Microsoft.Network/virtualNetworks'
+            }
+        }
+      ]*/
           addressPrefix: subnet.addressPrefix
         }
     }]
@@ -141,14 +144,14 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         adminPassword: psw
       }
       networkProfile: { 
-          networkApiVersion: '2020-11-01'
+         
           networkInterfaces: [{
             id: netInterface.id
             properties: {
               deleteOption: 'Delete'
             }
           }]
-      }    
+      }
   }
 }
 
@@ -214,11 +217,8 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
     capacity: sqlDatabaseParams.capacity
   }
   properties: {
-    collation: sqlDatabaseParams.collation
-    maxSizeBytes: sqlDatabaseParams.maxSizeBytes
-    catalogCollation: sqlDatabaseParams.catalogCollation
+
     zoneRedundant: sqlDatabaseParams.zoneRedundant
-    readScale: sqlDatabaseParams.readScale
     autoPauseDelay: sqlDatabaseParams.autoPauseDelay
     requestedBackupStorageRedundancy: sqlDatabaseParams.requestedBackupStorageRedundancy
     availabilityZone: sqlDatabaseParams.availabilityZone
@@ -270,6 +270,7 @@ resource mywebapp 'Microsoft.Web/sites@2023-01-01' = {
     keyVaultReferenceIdentity: mywebappParams.keyVaultReferenceIdentity
 
     virtualNetworkSubnetId: filter(virtualNetwork.properties.subnets, x => x.name == 'sub1')[0].id
+    
     siteConfig: {
       numberOfWorkers: mywebappParams.numberOfWorkers
       linuxFxVersion: mywebappParams.linuxFxVersion
