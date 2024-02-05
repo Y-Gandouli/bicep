@@ -193,12 +193,10 @@ resource SqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
   }
 }
 
-resource SqlServerFirewallRUles 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = [ 
-  
-  for rule in SqlFirewallRUles.rules: {
+resource SqlServerFirewallRUles 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = [ for rule in SqlFirewallRUles.rules: {
     name: rule.name
     parent: SqlServer
-  
+
     properties: {
       startIpAddress: rule.startIpAddress
       endIpAddress: rule.endIpAddress
